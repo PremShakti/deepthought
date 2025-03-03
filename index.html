@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Open+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar containerHeader">
+        <div class="logo">
+          <img
+            src="https://deepthought.education/assets/images/logo/logo.svg"
+            alt="deepthought-logo"
+          />
+        </div>
+        <div class="menue">
+          <ul>
+            <li class="home">
+              <a href="#"><i class="fa-solid fa-house-chimney"></i></a>
+            </li>
+            <li class="setting">
+              <a href="#"><i class="fa-solid fa-screwdriver-wrench"></i></a>
+            </li>
+            <li class="bell">
+              <a href="#"><i class="fa-solid fa-bell"></i></a>
+            </li>
+            <li class="avtar-container">
+              <a href="#">
+                <div class="avtar">
+                  <img src="/public/img/avtarimg.png" alt="" />
+                </div>
+              </a>
+            </li>
+            <li class="three-dot">
+              <a href="#"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main class="container">
+      <div class="heading-btn-container">
+        <h2 class="main-heading">Technical Project Management</h2>
+        <button>Submit task</button>
+      </div>
+
+  
+
+      <section class="banner">
+        <h2>Explore the world of management</h2>
+        <p>
+          As a project manager, you play an important reole in leading a project
+          through initiation, planning, execution, monitoring, controlling and
+          completion. How? Do you want to manage each and every step of your
+          life?
+        </p>
+      </section>
+      <div class="grid-box" id="formContainer"></div>
+
+      <!-- main containt -->
+    </main>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script
+      src="https://kit.fontawesome.com/24abdde451.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script  type="module" src="script.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Initialize Quill editor
+        var quill = new Quill("#editor-content", {
+          modules: {
+            toolbar: false, // We'll use our custom toolbar
+          },
+          placeholder: "Start typing...",
+          theme: "snow",
+        });
+
+        // Set initial content
+        quill.clipboard.dangerouslyPasteHTML(
+          "can not find submission with the given pid, task_id and asset_id"
+        );
+
+        // Word count functionality
+        const wordCountElement = document.getElementById("word-count");
+
+        function updateWordCount() {
+          const text = quill.getText();
+          const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+          wordCountElement.textContent = words;
+        }
+
+        // Update word count on text change
+        quill.on("text-change", updateWordCount);
+
+        // Initial word count
+        updateWordCount();
+
+        // Toolbar functionality
+        document.getElementById("bold").addEventListener("click", () => {
+          const selection = quill.getSelection();
+          if (selection) {
+            const format = quill.getFormat(selection);
+            quill.format("bold", !format.bold);
+          }
+        });
+
+        document.getElementById("italic").addEventListener("click", () => {
+          const selection = quill.getSelection();
+          if (selection) {
+            const format = quill.getFormat(selection);
+            quill.format("italic", !format.italic);
+          }
+        });
+
+        document.getElementById("undo").addEventListener("click", () => {
+          quill.history.undo();
+        });
+
+        document.getElementById("redo").addEventListener("click", () => {
+          quill.history.redo();
+        });
+
+        document
+          .getElementById("format-block")
+          .addEventListener("change", (e) => {
+            const selection = quill.getSelection();
+            if (selection) {
+              quill.format(
+                "header",
+                e.target.value === "p"
+                  ? false
+                  : Number.parseInt(e.target.value.replace("h", ""))
+              );
+            }
+          });
+
+        document.getElementById("link").addEventListener("click", () => {
+          const selection = quill.getSelection();
+          if (selection) {
+            const format = quill.getFormat(selection);
+            if (format.link) {
+              quill.format("link", false);
+            } else {
+              const url = prompt("Enter URL:");
+              if (url) {
+                quill.format("link", url);
+              }
+            }
+          }
+        });
+
+        document.getElementById("image").addEventListener("click", () => {
+          const url = prompt("Enter image URL:");
+          if (url) {
+            const range = quill.getSelection(true);
+            quill.insertEmbed(range.index, "image", url);
+          }
+        });
+
+        document.getElementById("fullscreen").addEventListener("click", () => {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
